@@ -10,7 +10,7 @@ import re
 import nltk
 from sentence_transformers import SentenceTransformer, util, CrossEncoder
 from rank_bm25 import BM25Okapi
-import SentencePiece
+import transformers
 from transformers import T5Tokenizer, T5ForConditionalGeneration
 
 # Download the required tokenizer model
