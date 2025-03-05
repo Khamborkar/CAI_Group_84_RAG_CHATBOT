@@ -2,3 +2,6 @@ streamlit
 pandas
 numpy
 nltk
+sentence_transformers
+rank_bm25
+transformers
