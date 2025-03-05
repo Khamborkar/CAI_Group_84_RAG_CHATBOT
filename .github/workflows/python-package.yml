@@ -28,6 +28,7 @@ jobs:
       - name: Download NLTK Data
         run: |
           python -c "import nltk; nltk.download('punkt')"
+          python -c "import nltk; nltk.download('punkt_tab')"
 
       - name: Lint Code
         run: |
