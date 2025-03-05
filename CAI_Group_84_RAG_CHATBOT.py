@@ -13,7 +13,7 @@ from rank_bm25 import BM25Okapi
 from transformers import T5Tokenizer, T5ForConditionalGeneration
 
 # Load and preprocess dataset
-data_file = 'C:\\MTech\\Semester 3\\Conversational AI\\Assg2\\financial data sp500 companies.csv'
+data_file = 'financial data sp500 companies.csv'
 df = pd.read_csv(data_file)
 
 def parse_date(x):
