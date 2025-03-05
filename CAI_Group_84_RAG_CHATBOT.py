@@ -14,6 +14,7 @@ from transformers import T5Tokenizer, T5ForConditionalGeneration
 
 # Download the required tokenizer model
 nltk.download('punkt')
+nltk.download('punkt_tab')
 
 # Load and preprocess dataset
 data_file = 'financial data sp500 companies.csv'
