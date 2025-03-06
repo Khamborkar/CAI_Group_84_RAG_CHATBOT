@@ -12,6 +12,9 @@ from sentence_transformers import SentenceTransformer, util, CrossEncoder
 from rank_bm25 import BM25Okapi
 from transformers import T5Tokenizer, T5ForConditionalGeneration
 
+# Download the required tokenizer model
+nltk.download('punkt')
+
 # Load and preprocess dataset
 data_file = 'financial data sp500 companies.csv'
 df = pd.read_csv(data_file)
