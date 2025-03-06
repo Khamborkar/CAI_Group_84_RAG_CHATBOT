@@ -142,39 +142,50 @@ def extract_relevant_value(query, retrieved_docs):
         return f"{selected_metric.replace('_', ' ').capitalize()} in 2021 ranged from {min(values)} to {max(values)}."
 
 
-def filter_relevant_context(query, context):
+def extract_company(query, available_companies):
+    """Extracts the company name from the query using keyword matching."""
+    for company in available_companies:
+        if company.lower() in query.lower():
+            return company
+    return None  # No company explicitly mentioned
+
+def filter_relevant_context(query, context, company):
+    """Dynamically filters context based on the requested company."""
     relevant_sentences = []
     for sentence in context:
-        if "revenue" in sentence.lower() and "3M" in sentence:
+        if company.lower() in sentence.lower():
             relevant_sentences.append(sentence)
     return relevant_sentences
 
+
 def generate_answer(query, context, max_length=100):
-    # Filter relevant context
-    relevant_context = filter_relevant_context(query, context)
-    
-    if not relevant_context:
-        return "Not found in context."
-    
+    """Dynamically generates the answer without hardcoding."""
+    available_companies = df['firm'].unique()  # Get all companies in dataset
+    company = extract_company(query, available_companies)
+
+    if not company:
+        return "Company not recognized. Please specify a company from the S&P 500 list."
+
     # Summarize the context to avoid redundancy
-    summarized_context = ". ".join(list(set(relevant_context)))  # Remove duplicates
-    
-    # Improved prompt
+    summarized_context = ". ".join(list(set(context)))  
+
+    # **Dynamic Prompt**
     prompt = f"""
     Question: {query}
     Context: {summarized_context}
     Instructions:
-    - Extract the exact numerical value for the revenue of 3M in 2021 from the context.
-    - If the context does not contain the revenue for 3M in 2021, say "Not found in context."
-    - Format the answer as: "The total revenue for 3M in 2021 is $X billion."
+    - Extract the exact numerical value for the revenue of {company} in 2021 from the context.
+    - If the context does not contain the revenue for {company} in 2021, say "Not found in context."
+    - Format the answer as: "The total revenue for {company} in 2021 is $X billion."
     Answer:
     """
-    
+
     input_ids = gen_tokenizer.encode(prompt, return_tensors='pt', max_length=512, truncation=True)
     output_ids = gen_model.generate(input_ids, max_length=max_length, top_p=0.95, top_k=50, do_sample=True)
     answer = gen_tokenizer.decode(output_ids[0], skip_special_tokens=True)
-    
+
     return format_answer(answer)
+
 
 def format_answer(answer):
     # Extract numbers and format them
@@ -214,26 +225,6 @@ def format_financial_numbers(number):
     else:
         return f"${number:,.2f}"
 
-def generate_answer(query, context, max_length=100):
-    # Summarize the context to avoid redundancy
-    summarized_context = ". ".join(list(set(context)))  # Remove duplicates
-    
-    # Improved prompt
-    prompt = f"""
-    Question: {query}
-    Context: {summarized_context}
-    Instructions:
-    - Extract the exact numerical value for the revenue of 3M in 2021 from the context.
-    - If the context does not contain the revenue for 3M in 2021, say "Not found in context."
-    - Format the answer as: "The total revenue for 3M in 2021 is $X billion."
-    Answer:
-    """
-    
-    input_ids = gen_tokenizer.encode(prompt, return_tensors='pt', max_length=512, truncation=True)
-    output_ids = gen_model.generate(input_ids, max_length=max_length, top_p=0.95, top_k=50, do_sample=True)
-    answer = gen_tokenizer.decode(output_ids[0], skip_special_tokens=True)
-    
-    return format_answer(answer)
 
 def fact_check_response(answer, retrieved_docs):
     """Check if the generated answer is supported by the retrieved documents."""
@@ -276,6 +267,7 @@ def main():
                 retrieved_docs, retrieved_score = retrieve_documents(query, search_method)
                 answer = generate_answer(query, retrieved_docs)
                 
+				
                 # Confidence Score Calculation
                 fact_check_score = fact_check_response(answer, retrieved_docs)
                 confidence = compute_confidence(retrieved_score, fact_check_score)
