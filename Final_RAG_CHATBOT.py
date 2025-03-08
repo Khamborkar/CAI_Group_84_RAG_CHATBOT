@@ -7,7 +7,11 @@ import pandas as pd
 import torch
 from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer, util, CrossEncoder
+import transformers
 from transformers import T5Tokenizer, T5ForConditionalGeneration
+
+# Ensure 'punkt' is downloaded before using word_tokenize
+nltk.download('punkt')
 
 # Set device for PyTorch (GPU if available, otherwise CPU)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
