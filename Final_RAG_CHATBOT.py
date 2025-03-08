@@ -1,5 +1,6 @@
 #import required libraries
 import re
+import os
 import streamlit as st
 import nltk
 from nltk.data import find
@@ -12,11 +13,14 @@ import sentencepiece
 import transformers
 from transformers import T5Tokenizer, T5ForConditionalGeneration
 
+nltk_data_path = os.path.expanduser("~/nltk_data")
+nltk.data.path.append(nltk_data_path)
+
 # Ensure 'punkt' is downloaded before using word_tokenize
 try:
     find('tokenizers/punkt')
 except LookupError:
-    nltk.download('punkt')
+    nltk.download('punkt', download_dir=nltk_data_path)
 
 # try:
 #     find('tokenizers/punkt_tab')
