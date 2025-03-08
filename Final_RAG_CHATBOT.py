@@ -12,6 +12,7 @@ from transformers import T5Tokenizer, T5ForConditionalGeneration
 
 # Ensure 'punkt' is downloaded before using word_tokenize
 nltk.download('punkt')
+nltk.download('punkt_tab')
 
 # Set device for PyTorch (GPU if available, otherwise CPU)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
