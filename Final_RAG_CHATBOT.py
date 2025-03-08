@@ -7,7 +7,7 @@ import pandas as pd
 import torch
 from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer, util, CrossEncoder
-import SentencePiece
+import sentencepiece
 import transformers
 from transformers import T5Tokenizer, T5ForConditionalGeneration
 
