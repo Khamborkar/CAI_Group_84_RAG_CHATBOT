@@ -222,7 +222,8 @@ def compute_confidence(retrieved_score, fact_check_score, requested_metric, retr
 
     # Ensure confidence is a valid number (0-100)
     confidence = max(0, min(confidence, 100))
-
+    confidence = float(confidence)
+    st.progress(confidence / 100)
     return round(confidence, 2)
 
 
