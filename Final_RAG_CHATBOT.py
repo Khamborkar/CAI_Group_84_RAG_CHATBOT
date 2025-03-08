@@ -230,8 +230,8 @@ def compute_confidence(retrieved_score, fact_check_score, requested_metric, retr
 
     # Ensure confidence is a valid number (0-100)
     confidence = max(0, min(confidence, 100))
-    confidence = float64(confidence)
-    if isinstance(confidence, (int, float)) and 0 <= confidence <= 100:
+    confidence = float(confidence)
+    if 0 <= confidence <= 100:
         st.progress(confidence / 100)
     else:
         st.error("Invalid confidence value.")
