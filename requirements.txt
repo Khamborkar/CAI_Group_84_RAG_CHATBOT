@@ -1,5 +1,3 @@
-re
-os
 streamlit
 pandas
 numpy
