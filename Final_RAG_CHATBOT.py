@@ -206,6 +206,7 @@ def fact_check_response(answer, retrieved_docs, requested_metric=None):
 
 # Confidence Calculation with a Dual Penalty for Missing Metrics
 def compute_confidence(retrieved_score, fact_check_score, requested_metric, retrieved_docs):
+    # Ensure scores are within valid bounds (0 to 1)
     retrieved_score_norm = min(max(retrieved_score, 0), 1)
     
     # Convert retrieved documents into a single lowercase text for searching
@@ -216,7 +217,12 @@ def compute_confidence(retrieved_score, fact_check_score, requested_metric, retr
         retrieved_score_norm *= 0.005  # Reduce retrieval confidence by 99.5%
         fact_check_score *= 0.2  # Reduce fact-check confidence by 80%
 
+    # Compute final confidence
     confidence = (0.6 * retrieved_score_norm + 0.4 * fact_check_score) * 100
+
+    # Ensure confidence is a valid number (0-100)
+    confidence = max(0, min(confidence, 100))
+
     return round(confidence, 2)
 
 
